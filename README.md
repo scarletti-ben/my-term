@@ -8,17 +8,18 @@ This project is for a custom-made terminal emulator built in `JavaScript`, for u
 # Information (WIP)
 The most important file within this project is [`terminal-widget.js`](./docs/components/terminal-widget.js). The other files within this repository only serve to [showcase](https://scarletti-ben.github.io/my-term) the component on `GitHub` pages.
 
-The import process from `terminal-widget.js` can be seen below
-```javascript
-import {
-    TerminalWidget,
-    TerminalShell,
-    TerminalCommand,
-    TerminalHijacker
-} from "./components/terminal-widget.js";
-```
+## Useful Snippets
 
-Adding a terminal widget to a container can be seen below
+- Imports from `terminal-widget.js`
+  ```javascript
+  import {
+      TerminalWidget,
+      TerminalShell,
+      TerminalCommand,
+      TerminalHijacker
+  } from "./components/terminal-widget.js";
+  ```
+- Adding a terminal widget to a container 
 ```javascript
 // ~ Create terminal widget element
 const widget = new TerminalWidget();
@@ -30,7 +31,7 @@ const container = document.getElementById('container');
 container.appendChild(widget);
 ```
 
-Adding a shell to the terminal widget can be seen below
+- Adding a shell to the terminal widget
 ```javascript
 // ~ Create a shell instance
 const shell = new TerminalShell('shell-name');
@@ -39,7 +40,7 @@ const shell = new TerminalShell('shell-name');
 shell.attachTo(widget);
 ```
 
-Adding a command to the shell can be seen below
+- Adding a command to the shell
 ```javascript
 // ~ Create a new command to clear the terminal widget screen
 const command = new TerminalCommand('clear', (widget, shell, command, ...args) => {
@@ -50,7 +51,7 @@ const command = new TerminalCommand('clear', (widget, shell, command, ...args) =
 shell.commands.push(command)
 ```
 
-You can find a full example that in [`index.js`](./docs/index.js)
+You can find a full example that uses some of the snippets above in [`index.js`](./docs/index.js)
 
 > [!NOTE]
 > You can also add a hijacker to a shell, though this feature is experimental and has not yet been documented
