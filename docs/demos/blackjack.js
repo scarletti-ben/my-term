@@ -32,13 +32,16 @@ class Blackjack {
 
     /** 
      * Create a new game with players and an empty deck
+     * 
+     * @param {boolean} [starting=true] 
      */
-    constructor() {
+    constructor(starting = true) {
         this.players = {
             'you': new Player('you'),
             'dealer': new Player('dealer')
         };
         this.deck = [];
+        if (starting) this.start();
     }
 
     /** 
@@ -98,7 +101,7 @@ class Blackjack {
 
         let yourString = '';
         const yourRanks = this.players.you.cards.map((card) => card.rank.short);
-        const yourScore = blackjackScore(yourRanks);
+        const yourScore = this.calculateScore(yourRanks);
         yourString += `You: [ ${yourRanks.join(', ')} ]`;
         yourString += ` (${yourScore})`;
         output.push(yourString);
@@ -106,7 +109,7 @@ class Blackjack {
         let dealerString = '';
         const dealerRanks = this.players.dealer.cards.map((card) => card.rank.short);
         if (hiding) dealerRanks.splice(0, 1);
-        const dealerScore = blackjackScore(dealerRanks);
+        const dealerScore = this.calculateScore(dealerRanks);
         if (hiding) dealerRanks.unshift('?');
         dealerString += `Dealer: [ ${dealerRanks.join(', ')} ]`;
         dealerString += ` (${dealerScore})\n`;
@@ -123,34 +126,27 @@ class Blackjack {
 // > ======================================================
 
 /** 
+ * Demonstration function to test Blackjack in my-term
  * 
  * @param {HTMLDivElement} container
  * @returns {void}
  */
 export default function demo(container) {
 
-    // ~ Create terminal widget element
-    const widget = new TerminalWidget();
+    // ~ Create terminal widget and shell
+    const { widget, shell } = TerminalWidget.createDefault(container);
 
-    // ~ Add the terminal widget to the container
-    container.appendChild(widget);
-
-    // ~ Create a shell instance
-    const shell = new TerminalShell();
-
-    // ~ Attach shell to terminal widget
-    shell.attachTo(widget);
+    // ~ Create a Blackjack game instance
+    const game = new Blackjack(true);
 
     // > ========================
     // > Hijack with Blackjack
     // > ========================
 
-    // ~ Create a Blackjack game instance
-    const game = new Blackjack();
-
     // ~ Create a simple state viewer function
     const showState = () => {
         game.getState().forEach((str) => widget.echo(str));
+        widget.echo(' ');
     };
 
     // ~ Create a hijacker instance
@@ -165,12 +161,8 @@ export default function demo(container) {
         widget.echo(`Welcome to ${hijacker.name}`);
         widget.parseToScreen(`<div class="output">Type <span class="themed">help</span> for available commands</div>`);
 
-        // ~ Start a new round
-        game.start();
-
         // ~ Echo the game state
         showState();
-        widget.echo(' ');
 
     };
 
@@ -197,7 +189,6 @@ export default function demo(container) {
                 widget.echo(`You drew a ${card.rank.short}`);
                 game.players.you.cards.push(card);
                 showState();
-                widget.echo(' ');
                 break;
             }
             case 'stick':
