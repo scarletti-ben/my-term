@@ -19,8 +19,8 @@
 // < Declarations
 // < ======================================================
 
-/** @type {string} */
-const VERSION = 'my-term v0.9.0';
+/** @type {string} Version name */
+const VERSION = 'my-term-v0.9.0';
 
 // < ======================================================
 // < Type Definitions
@@ -325,7 +325,7 @@ export class TerminalWidget extends HTMLElement {
 
     /** 
      * Change the prompt string
-     * @param {string} [symbol='$ ']
+     * @param {string} [symbol='$']
      * @param {number} [spaces=0]
      * @returns {void}
      */
@@ -392,6 +392,19 @@ export class TerminalWidget extends HTMLElement {
     }
 
     /**
+     * Add element to the terminal screen
+     * @param {Element} element - The element to add to screen
+     * @param {boolean} scrolling
+     * @return {void}
+     */
+    addToScreen(element, scrolling = true) {
+        this.screen.insertBefore(element, this.screen.lastElementChild);
+        if (scrolling) {
+            this.scrollToBottom();
+        }
+    }
+
+    /**
      * Add output text to the terminal screen
      * @param {string} text - Text to display
      * @param {EchoColour} [type=''] - Class for element styling
@@ -403,19 +416,6 @@ export class TerminalWidget extends HTMLElement {
         output.className = `output ${type}`;
         output.textContent = text;
         this.addToScreen(output);
-    }
-
-    /**
-     * Add element to the terminal screen
-     * @param {Element} element - The element to add to screen
-     * @param {boolean} scrolling
-     * @return {void}
-     */
-    addToScreen(element, scrolling = true) {
-        this.screen.insertBefore(element, this.screen.lastElementChild);
-        if (scrolling) {
-            this.scrollToBottom();
-        }
     }
 
     /**
