@@ -1,8 +1,9 @@
 # Overview
+This project is for a custom-made terminal emulator built in `JavaScript`, for use in web applications, called `my-term`
 
 ## Quick Start
-- 📁 Component files: [`/docs/components/`](./docs/components/)
 - 🚀 Live demo: [my-term](https://scarletti-ben.github.io/my-term)
+- 📁 Component file: [`terminal-widget.js`](./docs/components/terminal-widget.js)
 
 # Project Metadata
 ```yaml
