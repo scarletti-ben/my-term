@@ -20,7 +20,7 @@
 // < ======================================================
 
 /** @type {string} */
-const VERSION = 'my-term v1.0.0';
+const VERSION = 'my-term v0.9.0';
 
 // < ======================================================
 // < Type Definitions
@@ -732,7 +732,7 @@ export class TerminalShell {
     showHelp() {
         const commandNames = this.commands.map(c => c.name);
         for (const name of commandNames) {
-            this.widget.echo(name)
+            this.widget.echo(`    ${name}`)
         }
     }
 
