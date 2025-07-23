@@ -8,7 +8,52 @@ This project is for a custom-made terminal emulator built in `JavaScript`, for u
 # Information (WIP)
 The most important file within this project is [`terminal-widget.js`](./docs/components/terminal-widget.js). The other files within this repository only serve to [showcase](https://scarletti-ben.github.io/my-term) the component on `GitHub` pages.
 
-This section of the `README` is a work in progress.
+The import process from `terminal-widget.js` can be seen below
+```javascript
+import {
+    TerminalWidget,
+    TerminalShell,
+    TerminalCommand,
+    TerminalHijacker
+} from "./components/terminal-widget.js";
+```
+
+Adding a terminal widget to a container can be seen below
+```javascript
+// ~ Create terminal widget element
+const widget = new TerminalWidget();
+
+// ~ Get the container element to put the terminal widget into
+const container = document.getElementById('container');
+
+// ~ Add the terminal widget to the container
+container.appendChild(widget);
+```
+
+Adding a shell to the terminal widget can be seen below
+```javascript
+// ~ Create a shell instance
+const shell = new TerminalShell('shell-name');
+
+// ~ Attach shell to terminal widget
+shell.attachTo(widget);
+```
+
+Adding a command to the shell can be seen below
+```javascript
+// ~ Create a new command to clear the terminal widget screen
+const command = new TerminalCommand('clear', (widget, shell, command, ...args) => {
+    widget.clearScreen();
+}),
+
+// ~ Add the new command to the shell
+shell.commands.push(command)
+```
+
+You can find a full example that in [`index.js`](./docs/index.js)
+
+> [!NOTE]
+> You can also add a hijacker to a shell, though this feature is experimental and has not yet been documented
 
 # Dependencies
 This project currently does not have any dependencies
