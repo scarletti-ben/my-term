@@ -3,7 +3,7 @@
 // < ======================================================
 
 import basic from './basic.js';
-import game from './game.js';
+import blackjack from './blackjack.js';
 
 // > ======================================================
 // > Exported Demo Dictionary
@@ -15,5 +15,5 @@ import game from './game.js';
  */
 export default {
     basic,
-    game
+    blackjack
 }
