@@ -2,8 +2,8 @@
 This project is for a custom-made terminal emulator built in `JavaScript`, for use in web applications
 
 > [!TIP]
-> - You can view the live demo [here](https://scarletti-ben.github.io/my-term)
-> - You can view `terminal-widget.js` [here](./docs/components/terminal-widget.js)
+> - 🚀 You can view the live demo [here](https://scarletti-ben.github.io/my-term)
+> - 📁 You can view `terminal-widget.js` [here](./docs/components/terminal-widget.js)
 
 ## Quick Start
 - 🚀 Live demo: [my-term](https://scarletti-ben.github.io/my-term)
