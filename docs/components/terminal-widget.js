@@ -338,6 +338,7 @@ export class TerminalWidget extends HTMLElement {
         this.shadowRoot.addEventListener('mouseup', this._handleMouseUp);
         this.textarea.addEventListener('input', this._handleInput);
         this.setPrompt('$', 2);
+        this.toggleScrollbar();
     }
 
     /** 
@@ -581,9 +582,9 @@ export class TerminalHijacker {
 
     /**
      * Create a TerminalHijacker instance
-     * @param {string} name - The name of the hijacker instance
+     * @param {string} [name='hijacker'] The name of the hijacker instance
      */
-    constructor(name) {
+    constructor(name = 'hijacker') {
         this.name = name;
     }
 
@@ -696,9 +697,9 @@ export class TerminalShell {
 
     /** 
      * 
-     * @param {string} name
+     * @param {string} [name='shell']
      */
-    constructor(name) {
+    constructor(name = 'shell') {
         this.name = name;
         this._history = [];
         this._historyIndex = -1;
