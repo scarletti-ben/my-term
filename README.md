@@ -20,36 +20,36 @@ The most important file within this project is [`terminal-widget.js`](./docs/com
   } from "./components/terminal-widget.js";
   ```
 - Adding a terminal widget to a container 
-```javascript
-// ~ Create terminal widget element
-const widget = new TerminalWidget();
+  ```javascript
+  // ~ Create terminal widget element
+  const widget = new TerminalWidget();
 
-// ~ Get the container element to put the terminal widget into
-const container = document.getElementById('container');
+  // ~ Get the container element to put the terminal widget into
+  const container = document.getElementById('container');
 
-// ~ Add the terminal widget to the container
-container.appendChild(widget);
-```
+  // ~ Add the terminal widget to the container
+  container.appendChild(widget);
+  ```
 
 - Adding a shell to the terminal widget
-```javascript
-// ~ Create a shell instance
-const shell = new TerminalShell('shell-name');
+  ```javascript
+  // ~ Create a shell instance
+  const shell = new TerminalShell('shell-name');
 
-// ~ Attach shell to terminal widget
-shell.attachTo(widget);
-```
+  // ~ Attach shell to terminal widget
+  shell.attachTo(widget);
+  ```
 
 - Adding a command to the shell
-```javascript
-// ~ Create a new command to clear the terminal widget screen
-const command = new TerminalCommand('clear', (widget, shell, command, ...args) => {
-    widget.clearScreen();
-}),
+  ```javascript
+  // ~ Create a new command to clear the terminal widget screen
+  const command = new TerminalCommand('clear', (widget, shell, command, ...args) => {
+      widget.clearScreen();
+  }),
 
-// ~ Add the new command to the shell
-shell.commands.push(command)
-```
+  // ~ Add the new command to the shell
+  shell.commands.push(command)
+  ```
 
 You can find a full example that uses some of the snippets above in [`index.js`](./docs/index.js)
 
