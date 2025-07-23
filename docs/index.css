@@ -132,6 +132,8 @@ body {
 #main {
   height: 70%;
   width: 70%;
+  min-width: 300px;
+  min-height: 300px;
   margin: 0px;
   padding: 8px;
   display: block;
