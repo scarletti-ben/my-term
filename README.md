@@ -1,5 +1,8 @@
 # Overview
 
+## Quick Start
+- 📁 Component files: [`/docs/components/`](./docs/components/)
+- 🚀 Live demo: [my-term](https://scarletti-ben.github.io/my-term)
 
 # Project Metadata
 ```yaml
