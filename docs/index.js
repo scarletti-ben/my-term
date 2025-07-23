@@ -51,8 +51,9 @@ const main = /** @type {HTMLDivElement} */
 
         // ~ Create a terminal command to show shell commands
         new TerminalCommand('help', (widget, shell, command, ...args) => {
-            widget.echo(`Help for ${shell.name}`, 'info');
+            widget.echo(`Showing commands for ${shell.name}`, 'info');
             shell.showHelp();
+            widget.echo(` `);
         }),
 
         // ~ Create a terminal command to toggle the terminal widget scrollbar
