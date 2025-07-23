@@ -342,6 +342,32 @@ export class TerminalWidget extends HTMLElement {
     }
 
     /** 
+     * Create a terminal widget instance within a container
+     * @param {Element} container - The container to add the widget to
+     * @returns {TerminalWidget} The terminal widget instance
+     */
+    static create(container) {
+        const widget = new this();
+        container.appendChild(widget);
+        return widget;
+    }
+
+    /** 
+     * Create a default terminal widget instance
+     * - Creates an attached TerminalShell
+     * 
+     * @param {Element?} container - The container to add the widget to
+     * @returns {{widget: TerminalWidget, shell: TerminalShell}} Default widget and shell
+     * 
+     */
+    static createDefault(container) {
+        const widget = TerminalWidget.create(container);
+        const shell = new TerminalShell();
+        shell.attachTo(widget);
+        return { widget, shell };
+    }
+
+    /** 
      * Change the prompt string
      * @param {string} [symbol='$']
      * @param {number} [spaces=0]
