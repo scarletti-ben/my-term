@@ -154,3 +154,26 @@ body {
     padding: 4px;
   }
 }
+
+/* < ======================================================
+< Links Element Styling
+< ====================================================== */
+
+#links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#links a {
+  color: var(--theme-text);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+}
+
+#links a:hover {
+  background: var(--theme-accent-soft);
+}
