@@ -5,12 +5,10 @@ This project is for a custom-made terminal emulator built in `JavaScript`, for u
 > - 🚀 You can view the live demo [here](https://scarletti-ben.github.io/my-term)
 > - 📁 You can view `terminal-widget.js` [here](./docs/components/terminal-widget.js)
 
-## Quick Start
-- 🚀 Live demo: [my-term](https://scarletti-ben.github.io/my-term)
-- 📁 Component file: [`terminal-widget.js`](./docs/components/terminal-widget.js)
+# Information (WIP)
+The most important file within this project is [`terminal-widget.js`](./docs/components/terminal-widget.js). The other files within this repository only serve to [showcase](https://scarletti-ben.github.io/my-term) the component on `GitHub` pages.
 
-# Usage
-The only important file within this project is [`terminal-widget.js`](./docs/components/terminal-widget.js). The other files within this repository only serve to test the component and create the live [demo](https://scarletti-ben.github.io/my-term) on `GitHub` pages.
+This section of the `README` is a work in progress.
 
 # Dependencies
 This project currently does not have any dependencies
