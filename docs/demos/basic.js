@@ -101,7 +101,7 @@ export default function demo(container) {
 
             };
 
-            // ~ Attach the hijacjer instance to the shell
+            // ~ Attach the hijacker instance to the shell
             hijacker.attachTo(shell);
 
         })
@@ -110,9 +110,6 @@ export default function demo(container) {
 
     // ~ Add the terminal commands to the shell instance
     shell.commands.push(...commands);
-
-    // ~ Hide the terminal widget scrollbar
-    widget.toggleScrollbar();
 
     // ~ Put user cursor in the terminal widget
     widget.textarea.focus();
