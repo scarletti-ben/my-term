@@ -445,7 +445,7 @@ export class TerminalWidget extends HTMLElement {
      * Clear the terminal screen
      * @returns {void}
      */
-    clearScreen() {
+    _clearScreen() {
         const outputs = this.screen.querySelectorAll('.output');
         for (const output of outputs) {
             output.remove();
@@ -453,18 +453,41 @@ export class TerminalWidget extends HTMLElement {
     }
 
     /**
+     * Clear the terminal screen, with optional delay
+     * @param {number} [delay]
+     * @returns {void}
+     */
+    clearScreen(delay) {
+        if (delay) {
+            setTimeout(() => {
+                this._clearScreen();
+            }, delay);
+            return;
+        }
+        this._clearScreen();
+    }
+
+    /**
      * Clear the terminal textarea
+     * @returns {void}
+     */
+    _clearText(delay) {
+        this.textarea.value = '';
+    }
+
+    /**
+     * Clear the terminal textarea with optional delay
      * @param {number} [delay] 
      * @returns {void}
      */
     clearText(delay) {
         if (delay) {
             setTimeout(() => {
-                this.textarea.value = '';
+                this._clearText();
             }, delay);
             return;
         }
-        this.textarea.value = '';
+        this._clearText();
     }
 
     /**
@@ -558,7 +581,7 @@ export class TerminalHijacker {
         }
         shell.hijacker = this;
         this.shell = shell;
-        this.onEnter(shell);
+        this.onAttach(shell);
     }
 
     /**
@@ -569,7 +592,7 @@ export class TerminalHijacker {
         const shell = this.shell;
         shell.hijacker = null;
         this.shell = null;
-        this.onExit(shell);
+        this.onDetatch(shell);
     }
 
     /**
@@ -577,9 +600,9 @@ export class TerminalHijacker {
      * @param {TerminalShell} shell
      * @returns {void}
      */
-    onEnter(shell) {
+    onAttach(shell) {
 
-        shell.widget.echo('onEnter method should be overwritten');
+        shell.widget.echo('onAttach method should be overwritten');
 
     }
 
@@ -588,9 +611,9 @@ export class TerminalHijacker {
      * @param {TerminalShell} shell
      * @returns {void}
      */
-    onExit(shell) {
+    onDetatch(shell) {
 
-        shell.widget.echo('onExit method should be overwritten');
+        shell.widget.echo('onDetatch method should be overwritten');
 
     }
 
