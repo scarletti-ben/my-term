@@ -31,7 +31,7 @@ const VERSION = 'my-term-v0.9.0';
  */
 
 /** 
- * @typedef {''|'green'} ThemeColour
+ * @typedef {''|'green'|'cyan'} ThemeColour
  */
 
 /**
@@ -98,6 +98,23 @@ const CSS = /*css*/`
     --colour-success: hsla(140, 70%, 60%, 1);
     --colour-warning: hsla(50, 100%, 60%, 1);
     --colour-error: hsla(10, 100%, 70%, 1);
+
+}
+
+:host(.cyan) {
+
+    --colour-background: hsla(190, 40%, 10%, 1);
+    --colour-background-soft: hsla(190, 40%, 20%, 1);
+    --colour-background-rich: hsla(190, 40%, 4%, 1);
+    --colour-theme: hsla(190, 70%, 50%, 1);
+    --colour-theme-dim: hsla(190, 40%, 25%, 1);
+    --colour-theme-mid: hsla(190, 50%, 40%, 1);
+
+    --colour-log: hsla(190, 20%, 80%, 1);
+    --colour-info: hsla(190, 100%, 75%, 1);
+    --colour-success: hsla(160, 80%, 65%, 1);
+    --colour-warning: hsla(45, 100%, 65%, 1);
+    --colour-error: hsla(5, 100%, 70%, 1);
 
 }
 
