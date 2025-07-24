@@ -65,6 +65,9 @@ You can find a full example that uses some of the snippets above in [`index.js`]
 > [!NOTE]
 > You can also add a hijacker to a shell, though this feature is experimental and has not yet been documented
 
+# Demos
+- [Blackjack](https://scarletti-ben.github.io/my-term?demo=blackjack)
+
 # Dependencies
 This project currently does not have any dependencies
 
