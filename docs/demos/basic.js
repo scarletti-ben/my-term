@@ -1,3 +1,13 @@
+/**
+ * Basic demo for `my-term`
+ * 
+ * @module basic
+ * @author Ben Scarletti
+ * @since 2025-07-23
+ * @see {@link https://github.com/scarletti-ben}
+ * @license MIT
+ */
+
 // < ======================================================
 // < Imports
 // < ======================================================
@@ -14,26 +24,20 @@ import {
 // > ======================================================
 
 /** 
- * 
- * @param {HTMLDivElement} container
+ * Create an example terminal widget in a given container
+ * @param {HTMLDivElement} container - Container for my-term
  * @returns {void}
  */
 export default function demo(container) {
 
-    // ~ Create terminal widget element
-    const widget = new TerminalWidget();
+    // ~ Create terminal widget and shell
+    const { widget, shell } = TerminalWidget.createDefault(container);
 
-    // ~ Add the terminal widget to the container
-    container.appendChild(widget);
+    // ~ Put user cursor in the terminal widget textarea
+    widget.textarea.focus();
 
-    // ~ Create a shell instance
-    const shell = new TerminalShell('SHELL');
-
-    // ~ Attach shell to terminal widget
-    shell.attachTo(widget);
-
-    // ~ Create an array of terminal command instances
-    const commands = [
+    // ~ Add command instances to the terminal shell
+    shell.commands.push(...[
 
         // ~ Create a terminal command to clear the terminal widget screen
         new TerminalCommand('clear', (widget, shell, command, ...args) => {
@@ -67,7 +71,7 @@ export default function demo(container) {
                 widget.setTheme('green');
                 widget.clearScreen();
 
-                widget.parseToScreen(`<div class='output'>Welcome to <span class="error">${hijacker.name}</span></div>`);
+                widget.parseToScreen(`Welcome to <span class="error">${hijacker.name}</span>`);
 
                 widget.clearText(0);
 
@@ -86,7 +90,7 @@ export default function demo(container) {
                     return;
                 }
 
-                widget.parseToScreen(`<div class='output'><span class="error">${hijacker.name}</span> ignored <span class="themed">${code}</span></div>`);
+                widget.parseOutput(`<span class="error">${hijacker.name}</span> ignored <span class="themed">${code}</span>`);
 
             }
 
@@ -106,12 +110,6 @@ export default function demo(container) {
 
         })
 
-    ]
-
-    // ~ Add the terminal commands to the shell instance
-    shell.commands.push(...commands);
-
-    // ~ Put user cursor in the terminal widget
-    widget.textarea.focus();
+    ]);
 
 }
