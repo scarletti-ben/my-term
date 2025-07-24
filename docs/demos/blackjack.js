@@ -45,16 +45,13 @@ class Blackjack {
 
     /** 
      * Create a new game with players and an empty deck
-     * 
-     * @param {boolean} [starting=true] 
      */
-    constructor(starting = true) {
+    constructor() {
         this.players = {
             'player': new Player('player'),
             'dealer': new Player('dealer')
         };
         this.deck = [];
-        if (starting) this.start();
     }
 
     /** 
@@ -266,7 +263,7 @@ export default function demo(container) {
     const hijacker = new TerminalHijacker('Blackjack');
 
     // ~ Create a Blackjack game instance
-    const game = new Blackjack(true);
+    const game = new Blackjack();
 
     // ~ Create a simple game state viewer
     const showState = (hiding) => {
@@ -288,7 +285,9 @@ export default function demo(container) {
     const reset = () => {
         clear();
         game.start();
+        widget.parseOutput(`<span class="info">Quick Guide</span>: <span class="themed">hit</span> to draw a card, <span class="themed">stand</span> to stop drawing`);
         showState();
+        widget.scrollToBottom();
     };
 
     // ~ Define a handler for when the hijacker is attatched
@@ -300,9 +299,11 @@ export default function demo(container) {
         widget.parseOutput(`Welcome to <span class="themed">${hijacker.name}</span>`)
         widget.parseOutput(`Module for <span class="themed">my-term-v0.9.0</span> by <a href="https://github.com/scarletti-ben" target="_blank">Ben Scarletti</a> (MIT License)`);
         widget.parseOutput(`Type <span class="themed">help</span> for available commands`);
+        widget.echo(` `);
 
-        // ~ Echo the game state
-        showState(true);
+        anyKeyContinue(() => {
+            reset();
+        });
 
     };
 
@@ -347,8 +348,20 @@ export default function demo(container) {
                 draw(name, true);
                 let bust = game.hasBust(name);
                 if (bust) {
+
                     echo(`The ${name} has gone bust!`, 'warning');
+                    showState(false);
+
+                    const playerActualScores = game.getScores('player');
+                    const playerActualScore = Math.min(...playerActualScores);
+                    echo(`The ${'player'} had ${playerActualScore}`, 'log');
+
+                    const dealerActualScores = game.getScores('dealer');
+                    const dealerActualScore = Math.max(...dealerActualScores);
+                    echo(`The ${'dealer'} had ${dealerActualScore}`, 'log');
+
                     anyKeyContinue(reset);
+
                 }
 
                 break;
@@ -358,8 +371,8 @@ export default function demo(container) {
 
                 // ~ Get the score that the player stood on
                 const playerActualScores = game.getScores('player');
-                const playerScore = Math.max(...playerActualScores);
-
+                const playerScore = game.getValidScore('player');
+                
                 // ~ Show message
                 echo(`The ${'player'} has chosen to stand on ${playerScore}`, 'info');
                 showState(false);
