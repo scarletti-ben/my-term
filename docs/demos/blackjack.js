@@ -273,19 +273,23 @@ export default function demo(container) {
 
     // ~ Any key to continue, with callback
     const anyKeyContinue = (callback) => {
-        echo(`Press any key to continue...`, 'info');
-        setTimeout(() => {
-            widget.addEventListener('keydown', () => {
-                callback();
-            }, { once: true });
-        }, 100);
+        requestAnimationFrame(() => {
+            echo(' ');
+            echo(`Press any key to continue...`, 'info');
+            setTimeout(() => {
+                widget.addEventListener('keydown', () => {
+                    callback();
+                }, { once: true });
+            }, 100);
+        })
     };
 
     // ~ Create a reset function
     const reset = () => {
         clear();
         game.start();
-        widget.parseOutput(`<span class="info">Quick Guide</span>: <span class="themed">hit</span> to draw a card, <span class="themed">stand</span> to stop drawing`);
+        widget.parseOutput(`<span class="info">Command Guide</span>: <span class="themed">hit</span> to draw a card, <span class="themed">stand</span> to stop drawing`);
+        widget.parseOutput(`<span class="info">Hotkeys</span>: <span class="themed">Right</span> to draw a card, <span class="themed">Left</span> to stop drawing`);
         showState();
         widget.scrollToBottom();
     };
@@ -299,7 +303,6 @@ export default function demo(container) {
         widget.parseOutput(`Welcome to <span class="themed">${hijacker.name}</span>`)
         widget.parseOutput(`Module for <span class="themed">my-term-v0.9.0</span> by <a href="https://github.com/scarletti-ben" target="_blank">Ben Scarletti</a> (MIT License)`);
         widget.parseOutput(`Type <span class="themed">help</span> for available commands`);
-        widget.echo(` `);
 
         anyKeyContinue(() => {
             reset();
@@ -343,22 +346,22 @@ export default function demo(container) {
                 // > Player Logic
                 // > ==========================
 
-                const name = 'player';
-
-                draw(name, true);
-                let bust = game.hasBust(name);
+                draw('player', true);
+                let bust = game.hasBust('player');
                 if (bust) {
 
-                    echo(`The ${name} has gone bust!`, 'warning');
                     showState(false);
 
                     const playerActualScores = game.getScores('player');
                     const playerActualScore = Math.min(...playerActualScores);
-                    echo(`The ${'player'} had ${playerActualScore}`, 'log');
+                    // echo(`The ${'player'} has ${playerActualScore}`, 'log');
 
                     const dealerActualScores = game.getScores('dealer');
                     const dealerActualScore = Math.max(...dealerActualScores);
-                    echo(`The ${'dealer'} had ${dealerActualScore}`, 'log');
+                    // echo(`The ${'dealer'} has ${dealerActualScore}`, 'log');
+
+                    echo(`The ${'player'} has gone bust with ${playerActualScore}!`, 'warning');
+                    echo(`The ${'dealer'} has won with ${dealerActualScore}!`, 'error');
 
                     anyKeyContinue(reset);
 
@@ -372,7 +375,7 @@ export default function demo(container) {
                 // ~ Get the score that the player stood on
                 const playerActualScores = game.getScores('player');
                 const playerScore = game.getValidScore('player');
-                
+
                 // ~ Show message
                 echo(`The ${'player'} has chosen to stand on ${playerScore}`, 'info');
                 showState(false);
@@ -419,19 +422,20 @@ export default function demo(container) {
                 const dealerScore = game.getValidScore('dealer');
 
                 if (!dealerScore) {
-                    echo(`The ${'dealer'} has gone bust!`, 'warning');
                     const dealerActualScores = game.getScores('dealer');
                     const dealerActualScore = Math.max(...dealerActualScores);
-                    echo(`The ${'dealer'} had ${dealerActualScore}`, 'log');
-                    echo(`The ${'player'} had ${playerScore}`, 'log');
+                    // echo(`The ${'dealer'} has ${dealerActualScore}`, 'log');
+                    // echo(`The ${'player'} has ${playerScore}`, 'log');
+                    echo(`The ${'dealer'} has gone bust with ${dealerActualScore}!`, 'warning');
+                    echo(`The ${'player'} has won with ${playerScore}!`, 'success');
                 } else if (playerScore < dealerScore) {
-                    echo(`The ${'dealer'} won with ${dealerScore}`, 'warning');
-                    echo(`The ${'player'} had ${playerScore}`, 'log');
+                    echo(`The ${'player'} has ${playerScore}`, 'log');
+                    echo(`The ${'dealer'} has won with ${dealerScore}`, 'warning');
                 } else if (playerScore === dealerScore) {
-                    echo(`There was a tie on ${dealerScore}`, 'warning');
+                    echo(`There was a tie on ${dealerScore}`, 'info');
                 } else {
-                    echo(`The ${'player'} won with ${playerScore}`, 'success');
-                    echo(`The ${'dealer'} had ${dealerScore}`, 'log');
+                    echo(`The ${'dealer'} has ${dealerScore}`, 'log');
+                    echo(`The ${'player'} has won with ${playerScore}`, 'success');
                 }
                 anyKeyContinue(reset);
 
@@ -461,6 +465,17 @@ export default function demo(container) {
             }
         }
     }
+
+    // ! Add quick hotkeys
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            hijacker.handleSubmit('hit');
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            hijacker.handleSubmit('stand');
+        }
+    });
 
     // ~ Attach the hijacker instance to the shell
     hijacker.attachTo(shell);
