@@ -264,6 +264,13 @@ const CSS = /*css*/`
     line-height: 20px;
 }
 
+.output a,
+.output a:visited,
+.output a:active {
+  color: currentColor;
+  text-decoration: underline;
+}
+
 .themed { color: var(--colour-theme) !important; }
 .error { color: var(--colour-error)!important; }
 .success { color: var(--colour-success) !important; }
@@ -291,7 +298,7 @@ const HTML = /*html*/`
         </div>
     </div>
     <div id="screen">
-        <div class="output">Welcome to <span class="themed">${VERSION}</span> by ${'Ben Scarletti'}</div>
+        <div class="output">Welcome to <span class="themed">${VERSION}</span> by <a href="https://github.com/scarletti-ben" target="_blank">Ben Scarletti</a> (MIT License)</div>
         <div class="output"><span class="info">Hotkeys</span>: <span class="themed">Tab</span> to autocomplete, <span class="themed">Up</span> / <span class="themed">Down</span> to navigate history</div>
         <div class="output">Type <span class="themed">help</span> for available commands</div>
         <div id="input-line">
@@ -475,6 +482,20 @@ export class TerminalWidget extends HTMLElement {
         for (const element of elements) {
             this.addToScreen(element, scrolling);
         }
+    }
+
+    /**
+     * Parse HTML string and add resulting element(s) to the terminal screen
+     * - The string is automatically wrapped in <div class="output">
+     * @param {string} markup - The HTML string to parse and add to screen
+     * @param {boolean} scrolling
+     * @return {void}
+     */
+    parseOutput(markup, scrolling = true) {
+        const output = document.createElement('div');
+        output.className = 'output';
+        output.innerHTML = markup.trim();
+        this.addToScreen(output, scrolling);
     }
 
     /**
