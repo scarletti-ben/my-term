@@ -1,3 +1,16 @@
+/**
+ * Blackjack demo for `my-term`
+ * 
+ * Simple implementation of blackjack to give an 
+ * example of controlling my-term
+ * 
+ * @module blackjack
+ * @author Ben Scarletti
+ * @since 2025-07-10
+ * @see {@link https://github.com/scarletti-ben}
+ * @license MIT
+ */
+
 // < ======================================================
 // < Imports
 // < ======================================================
@@ -37,7 +50,7 @@ class Blackjack {
      */
     constructor(starting = true) {
         this.players = {
-            'you': new Player('you'),
+            'player': new Player('player'),
             'dealer': new Player('dealer')
         };
         this.deck = [];
@@ -53,14 +66,102 @@ class Blackjack {
     }
 
     /** 
+     * Draw a card to a specific player
+     * @param {Player|string} player - The player drawing the card
+     * @returns {Card} The drawn card
+     */
+    drawTo(player) {
+        const card = this.deck.pop();
+        player = this.getPlayer(player);
+        player.cards.push(card);
+        return card;
+    }
+
+    /** 
+     * Get a player instance
+     * @param {string|Player} player - Player name, or player instance
+     * @returns {Player} The player instance
+     */
+    getPlayer(player) {
+        if (player instanceof Player) {
+            return player;
+        }
+        return this.players[player];
+    }
+
+    /** 
+     * Get the rank names for the cards a player has
+     * @param {Player|string} player - The player to check
+     * @param {boolean} [hiding=false] Whether to ignore first card
+     * @returns {string[]} The rank names for the player
+     */
+    getRanks(player, hiding = false) {
+        player = this.getPlayer(player);
+        const ranks = player.cards.map(c => c.rank.short);
+        console.log(ranks);
+        console.log(player.cards);
+        return hiding
+            ? ranks.slice(1)
+            : ranks;
+    }
+
+    /** 
      * Start a new round with a new deck
      */
     start() {
         this.deck = createCards(true);
+        this.resetPlayer('player');
+        this.resetPlayer('dealer');
         for (let i = 0; i < 2; i++) {
-            this.players.you.cards.push(this.drawCard());
-            this.players.dealer.cards.push(this.drawCard());
+            this.drawTo('player');
+            this.drawTo('dealer');
         }
+    }
+
+    /** 
+     * Reset a player, removing all cards
+     * @param {Player|string} player - The player to reset
+     * @returns {void}
+     */
+    resetPlayer(player) {
+        player = this.getPlayer(player);
+        player.cards.length = 0;
+    }
+
+    /** 
+     * Check if a specific player has gone bust
+     * @param {Player|string} player - The player to check
+     * @returns {number[]} The scores array
+     */
+    hasBust(player) {
+        const scores = this.getScores(player, false);
+        return scores.every(score => score > 21);
+    }
+
+    /** 
+     * Get current scores for a specific player
+     * @param {Player|string} player - The player to check
+     * @param {boolean} [hiding=false] Whether to ignore first card
+     * @returns {number[]} The scores array
+     */
+    getScores(player, hiding = false) {
+        player = this.getPlayer(player);
+        const ranks = this.getRanks(player, hiding);
+        return this.calculateScores(ranks);
+    }
+
+    /** 
+     * Get max score for a specific player
+     * @param {Player|string} player - The player to check
+     * @returns {number|null} The maximum score a player has
+     */
+    getValidScore(player) {
+        const scores = this.getScores(player);
+        const validScores = scores.filter(score => score <= 21);
+        if (validScores.length === 0) {
+            return null;
+        }
+        return Math.max(...validScores);
     }
 
     /** 
@@ -68,7 +169,7 @@ class Blackjack {
      * @param {string} ranks
      * @returns {number[]}
      */
-    calculateScore(ranks) {
+    calculateScores(ranks) {
 
         let score = 0;
         let aces = 0;
@@ -99,21 +200,27 @@ class Blackjack {
 
         let output = [];
 
-        let yourString = '';
-        const yourRanks = this.players.you.cards.map((card) => card.rank.short);
-        const yourScore = this.calculateScore(yourRanks);
-        yourString += `You: [ ${yourRanks.join(', ')} ]`;
-        yourString += ` (${yourScore})`;
-        output.push(yourString);
+        let playerString = 'Player:'.padEnd(10, ' ');
+        let ranks = this.getRanks('player');
+        let scores = this.getScores('player');
+        let ranksString = ranks.join(', ');
+        let scoresString = scores.join(', ');
+        playerString += `[${ranksString}]`
+        playerString += ` (${scoresString})`
+        output.push(playerString);
+        console.log(playerString);
 
-        let dealerString = '';
-        const dealerRanks = this.players.dealer.cards.map((card) => card.rank.short);
-        if (hiding) dealerRanks.splice(0, 1);
-        const dealerScore = this.calculateScore(dealerRanks);
-        if (hiding) dealerRanks.unshift('?');
-        dealerString += `Dealer: [ ${dealerRanks.join(', ')} ]`;
-        dealerString += ` (${dealerScore})\n`;
+        let dealerString = 'Dealer:'.padEnd(10, ' ');
+        ranks = this.getRanks('dealer', hiding);
+        if (hiding) ranks.unshift('?');
+        scores = this.getScores('dealer', hiding);
+        scores = scores.map(n => String(n) + (hiding ? '?' : ''));
+        ranksString = ranks.join(', ');
+        scoresString = scores.join(', ');
+        dealerString += `[${ranksString}]`
+        dealerString += ` (${scoresString})`
         output.push(dealerString);
+        console.log(dealerString);
 
         return output;
 
@@ -127,8 +234,7 @@ class Blackjack {
 
 /** 
  * Demonstration function to test Blackjack in my-term
- * 
- * @param {HTMLDivElement} container
+ * @param {HTMLDivElement} container - Container for my-term
  * @returns {void}
  */
 export default function demo(container) {
@@ -136,72 +242,208 @@ export default function demo(container) {
     // ~ Create terminal widget and shell
     const { widget, shell } = TerminalWidget.createDefault(container);
 
-    // ~ Create a Blackjack game instance
-    const game = new Blackjack(true);
+    // ~ Create an alias for echo
+    const echo = (...args) => {
+        widget.echo(...args);
+    };
+
+    // ~ Create a function for raising errors
+    const raise = (text) => {
+        widget.echo(text, 'error');
+    };
+
+    // ~ Create a function to clear screen
+    const clear = (delay) => {
+        widget.clearScreen(delay);
+        widget.clearText(delay);
+    };
 
     // > ========================
     // > Hijack with Blackjack
     // > ========================
 
-    // ~ Create a simple state viewer function
-    const showState = () => {
-        game.getState().forEach((str) => widget.echo(str));
-        widget.echo(' ');
-    };
-
     // ~ Create a hijacker instance
     const hijacker = new TerminalHijacker('Blackjack');
+
+    // ~ Create a Blackjack game instance
+    const game = new Blackjack(true);
+
+    // ~ Create a simple game state viewer
+    const showState = (hiding) => {
+        game.getState(hiding).forEach((str) => echo(str));
+        echo(' ');
+    };
+
+    // ~ Any key to continue, with callback
+    const anyKeyContinue = (callback) => {
+        echo(`Press any key to continue...`, 'info');
+        setTimeout(() => {
+            widget.addEventListener('keydown', () => {
+                callback();
+            }, { once: true });
+        }, 100);
+    };
+
+    // ~ Create a reset function
+    const reset = () => {
+        clear();
+        game.start();
+        showState();
+    };
 
     // ~ Define a handler for when the hijacker is attatched
     hijacker.onAttach = (shell) => {
 
+        // ~ Change theme and add welcome message
         widget.setTheme('cyan');
-        widget.clearScreen();
-        widget.clearText(0);
-        widget.echo(`Welcome to ${hijacker.name}`);
-        widget.parseToScreen(`<div class="output">Type <span class="themed">help</span> for available commands</div>`);
+        clear();
+        widget.parseOutput(`Welcome to <span class="themed">${hijacker.name}</span>`)
+        widget.parseOutput(`Module for <span class="themed">my-term-v0.9.0</span> by <a href="https://github.com/scarletti-ben" target="_blank">Ben Scarletti</a> (MIT License)`);
+        widget.parseOutput(`Type <span class="themed">help</span> for available commands`);
 
         // ~ Echo the game state
-        showState();
+        showState(true);
 
+    };
+
+    // ~ Create a simple draw function
+    const draw = (name, hiding) => {
+        const card = game.drawTo(name);
+        echo(`The ${name} drew a ${card.rank.short}`);
+        showState(hiding);
     };
 
     // ~ Define a handler for submitted text
     hijacker.handleSubmit = (code) => {
         switch (code) {
             case 'help': {
-                widget.echo(`Showing commands for ${hijacker.name}`, 'info');
-                widget.echo(`    help - Show list of available commands`);
-                widget.echo(`    clear - Clear the terminal screen`);
-                widget.echo(`    hit - Draw a card`);
-                widget.echo(`    stand - End your turn`);
-                widget.echo(`    state - Show game state`);
+
+                // ~ Echo all available commands
+                echo(`Showing commands for ${hijacker.name}`, 'info');
+                echo(`    help - Show list of available commands`);
+                echo(`    clear - Clear the terminal screen`);
+                echo(`    hit - Draw a card`);
+                echo(`    stand - End your turn`);
+                echo(`    state - Show game state`);
+                echo(`    reset - Reset the game`);
+
                 break;
             }
             case 'clear': {
-                widget.clearScreen();
-                widget.clearText();
+
+                // ~ Clear the screen
+                clear();
                 break;
             }
             case 'twist':
             case 'hit': {
-                let card = game.drawCard();
-                widget.echo(`You drew a ${card.rank.short}`);
-                game.players.you.cards.push(card);
-                showState();
+
+                // > ==========================
+                // > Player Logic
+                // > ==========================
+
+                const name = 'player';
+
+                draw(name, true);
+                let bust = game.hasBust(name);
+                if (bust) {
+                    echo(`The ${name} has gone bust!`, 'warning');
+                    anyKeyContinue(reset);
+                }
+
                 break;
             }
             case 'stick':
             case 'stand': {
-                widget.echo('stood');
+
+                // ~ Get the score that the player stood on
+                const playerActualScores = game.getScores('player');
+                const playerScore = Math.max(...playerActualScores);
+
+                // ~ Show message
+                echo(`The ${'player'} has chosen to stand on ${playerScore}`, 'info');
+                showState(false);
+
+                // > ==========================
+                // > Dealer Logic
+                // > ==========================
+
+                // ~ Dealer check
+                const willPlay = () => {
+
+                    const scores = game.getScores('dealer');
+                    const valid = [...scores.filter(score => score <= 21)];
+
+                    // ? No valid cards
+                    if (valid.length === 0) {
+                        return false;
+                    }
+
+                    // ? Will not play if already winning
+                    if (valid.some((score) => score > playerScore)) {
+                        return false;
+
+                        // ? Will not play if 17 or higher
+                    } else if (valid.some((score) => score >= 17)) {
+                        return false;
+
+                        // ? Plays otherwise
+                    } else {
+                        return true;
+                    }
+
+                }
+
+                // ~ Dealer decision loop
+                function dealerLoop() {
+                    if (willPlay()) {
+                        draw('dealer', false);
+                        requestAnimationFrame(dealerLoop);
+                    }
+                }
+                dealerLoop();
+
+                const dealerScore = game.getValidScore('dealer');
+
+                if (!dealerScore) {
+                    echo(`The ${'dealer'} has gone bust!`, 'warning');
+                    const dealerActualScores = game.getScores('dealer');
+                    const dealerActualScore = Math.max(...dealerActualScores);
+                    echo(`The ${'dealer'} had ${dealerActualScore}`, 'log');
+                    echo(`The ${'player'} had ${playerScore}`, 'log');
+                } else if (playerScore < dealerScore) {
+                    echo(`The ${'dealer'} won with ${dealerScore}`, 'warning');
+                    echo(`The ${'player'} had ${playerScore}`, 'log');
+                } else if (playerScore === dealerScore) {
+                    echo(`There was a tie on ${dealerScore}`, 'warning');
+                } else {
+                    echo(`The ${'player'} won with ${playerScore}`, 'success');
+                    echo(`The ${'dealer'} had ${dealerScore}`, 'log');
+                }
+                anyKeyContinue(reset);
+
+                break;
+            };
+            case 'state': {
+
+                // ~ Show current game state
+                showState(false);
+
                 break;
             }
-            case 'state': {
-                showState();
+            case 'r':
+            case 'reset': {
+
+                // ~ Reset the game
+                reset();
+
                 break;
             }
             default: {
-                widget.echo('not implemented');
+
+                // ~ Echo for unknown commands
+                echo(`${code} is not a valid command`);
+
                 break;
             }
         }
