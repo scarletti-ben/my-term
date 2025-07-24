@@ -457,11 +457,12 @@ export class TerminalWidget extends HTMLElement {
 
     /**
      * Add output text to the terminal screen
+     * @this {TerminalWidget} Bound to TerminalWidget instance
      * @param {string} text - Text to display
      * @param {EchoColour} [type=''] - Class for element styling
      * @return {void}
      */
-    echo(text, type = '') {
+    echo = (text, type = '') => {
         type = type === 'log' ? '' : type;
         const output = document.createElement('div');
         output.className = `output ${type}`;
@@ -742,6 +743,9 @@ export class TerminalShell {
     /** @type {number} */
     _historyIndex;
 
+    /** @type {TerminalWidget['echo']} */
+    echo;
+
     /** 
      * 
      * @param {string} [name='shell']
@@ -811,6 +815,7 @@ export class TerminalShell {
     attachTo(widget) {
         widget.shell = this;
         this.widget = widget;
+        this.echo = this.widget.echo;
     }
 
     /**
