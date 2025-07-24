@@ -51,6 +51,15 @@ The most important file within this project is [`terminal-widget.js`](./docs/com
   shell.commands.push(command)
   ```
 
+- Alternative methods for adding a widget to a container
+```javascript
+// ~ Create terminal widget within a container
+const widget = TerminalWidget.create(container);
+
+// ~ Create terminal widget and shell
+const { widget , shell } = TerminalWidget.createDefault(container);
+```
+
 You can find a full example that uses some of the snippets above in [`index.js`](./docs/index.js)
 
 > [!NOTE]
